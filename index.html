@@ -45,15 +45,7 @@
   }
   #topbar .brand{font-family:var(--serif);font-size:1.05rem;letter-spacing:.02em;}
   #topbar .brand small{display:block;font-family:var(--sans);font-size:.68rem;color:#c9c2ad;letter-spacing:.08em;}
-  #timerWrap{display:flex;align-items:center;gap:.6rem;}
-  #timerWrap.hidden{display:none;}
-  #timerLabel{font-size:.72rem;color:#c9c2ad;letter-spacing:.06em;}
-  #timer{
-    font-family:var(--mono);font-size:1.25rem;font-weight:600;
-    background:#0e1822;padding:.25rem .6rem;border-radius:3px;
-    border:1px solid #33465a;color:#f1ede1;
-  }
-  #timer.low{color:#ffb4ac;border-color:var(--alert);}
+  /* (no on-screen timer — timing is handled by the test administrator) */
 
   /* ---------- Layout shell ---------- */
   #app{display:flex;min-height:calc(100% - 58px);}
@@ -181,10 +173,6 @@
 
 <div id="topbar">
   <div class="brand">IELTS Academic — Practice Test 3<small id="candidateLine">&nbsp;</small></div>
-  <div id="timerWrap" class="hidden">
-    <span id="timerLabel">Reading &amp; Writing time remaining</span>
-    <span id="timer">2:00:00</span>
-  </div>
 </div>
 
 <div id="app">
@@ -218,7 +206,7 @@
       <p>Enter your name to start the Listening module. Your progress is saved automatically in this browser as you go.</p>
       <label for="candidateName">Full name</label>
       <input type="text" id="candidateName" placeholder="e.g. Juan Dela Cruz">
-      <div class="note">This test has no audio files loaded yet — see the note on the first Listening screen. You can still answer every question type to check the tool works.</div>
+      <div class="note">Play the Listening audio yourself, from your own source — this tool has no audio players, just the answer forms for all four sections.</div>
       <button class="btn" id="startBtn">Begin Listening Module</button>
     </div>
   </section>
@@ -227,17 +215,12 @@
   <section class="screen hidden" id="listenIntro">
     <h1>Listening Module</h1>
     <p>You will hear four recordings and answer 40 questions. Each recording is played once. Write your answers as you listen, then move to the next section.</p>
-    <div class="note"><strong>Audio note:</strong> the source material references "Practice Test 3, Track 1–4." No audio files were supplied with this test, so the players below are placeholders. To finish setting this test up, add your own MP3s to an <code>audio/</code> folder next to this file and point each <code>&lt;audio&gt;</code> tag's <code>src</code> at the right track (search the HTML for <code>AUDIO SOURCE NEEDED</code>).</div>
     <div class="btnrow"><button class="btn" onclick="go('listen1')">Start Section 1 →</button></div>
   </section>
 
   <!-- ============ LISTENING 1 ============ -->
   <section class="screen hidden" id="listen1">
     <h1>Section 1 — Questions 1–10</h1>
-    <audio controls style="width:100%;margin-bottom:1rem;">
-      <source src="audio/track1-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
-      Your browser does not support audio playback.
-    </audio>
     <div class="qgroup">
       <h3>Questions 1–6</h3>
       <p class="instructions">Complete the form below, using NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.</p>
@@ -269,9 +252,6 @@
   <!-- ============ LISTENING 2 ============ -->
   <section class="screen hidden" id="listen2">
     <h1>Section 2 — Questions 11–20</h1>
-    <audio controls style="width:100%;margin-bottom:1rem;">
-      <source src="audio/track2-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
-    </audio>
     <div class="qgroup">
       <h3>Questions 11–14</h3>
       <p class="instructions">You are going to hear a radio interview with a self-publishing expert. What FOUR things does she say new writers need to make sure they have before they self-publish?</p>
@@ -327,9 +307,6 @@
   <!-- ============ LISTENING 3 ============ -->
   <section class="screen hidden" id="listen3">
     <h1>Section 3 — Questions 21–30</h1>
-    <audio controls style="width:100%;margin-bottom:1rem;">
-      <source src="audio/track3-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
-    </audio>
     <div class="qgroup">
       <h3>Question 21</h3>
       <p class="instructions">Which graph shows what students reported feeling after a year at school?</p>
@@ -395,9 +372,6 @@
   <!-- ============ LISTENING 4 ============ -->
   <section class="screen hidden" id="listen4">
     <h1>Section 4 — Questions 31–40</h1>
-    <audio controls style="width:100%;margin-bottom:1rem;">
-      <source src="audio/track4-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
-    </audio>
     <div class="qgroup">
       <h3>Questions 31–37</h3>
       <p class="instructions">Answer the questions below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.</p>
@@ -435,19 +409,19 @@
       </div>
     </div>
     <div class="callout warn">
-      <strong>This ends the Listening module.</strong> Once you click below, you will move to Reading &amp; Writing, the 2‑hour timer starts immediately, and you will <u>not</u> be able to return to Listening.
+      <strong>This ends the Listening module.</strong> Once you click below, you will move to Reading &amp; Writing and will <u>not</u> be able to return to Listening.
     </div>
     <div class="btnrow">
       <button class="btn secondary" onclick="go('listen3')">← Back</button>
-      <button class="btn danger" id="finishListeningBtn">Finish Listening &amp; Start Reading/Writing (2:00:00) →</button>
+      <button class="btn danger" id="finishListeningBtn">Finish Listening &amp; Start Reading/Writing →</button>
     </div>
   </section>
 
   <!-- ============ RW INTRO ============ -->
   <section class="screen hidden" id="rwIntro">
-    <h1>Reading &amp; Writing — 2 hours total</h1>
-    <p>You have <strong>2 hours</strong> to complete three Reading passages (40 questions) and two Writing tasks. The timer started when you left Listening and keeps running even if you close this tab — it is based on the clock, not on time spent on-screen. When time runs out, your answers submit automatically.</p>
-    <div class="callout">Use the left‑hand menu to move between Reading passages and Writing tasks in any order. Recommended timing: about 60 minutes for Reading, about 60 minutes for Writing (20 for Task 1, 40 for Task 2) — but nothing is locked between sections.</div>
+    <h1>Reading &amp; Writing</h1>
+    <p>Complete three Reading passages (40 questions) and two Writing tasks. Your test administrator is timing this session separately, so there's no on-screen clock here.</p>
+    <div class="callout">Use the left‑hand menu to move between Reading passages and Writing tasks in any order.</div>
     <div class="btnrow"><button class="btn" onclick="go('reading1')">Go to Reading Passage 1 →</button></div>
   </section>
 
@@ -729,6 +703,321 @@
 
 <footer class="appfoot">IELTS Academic Practice Test 3 — practice tool, not an official IELTS product.</footer>
 
-<script src="app.js"></script>
+<script>
+/* =====================================================================
+   IELTS Practice Test 3 — front-end logic
+   Everything is saved to localStorage as the candidate works, so a
+   refresh or accidental tab close does not lose progress or reset the
+   2-hour Reading & Writing clock (the clock is based on a stored end
+   timestamp, not on elapsed on-screen time).
+   ===================================================================== */
+
+// ------------------------------------------------------------------
+// CONFIGURATION — fill these in before you publish the test
+// ------------------------------------------------------------------
+const CONFIG = {
+  // Paste the "Web app" URL you get from deploying the companion
+  // Google Apps Script (see google-apps-script.gs) as a Web App.
+  GOOGLE_SCRIPT_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+};
+
+// ------------------------------------------------------------------
+// STATE
+// ------------------------------------------------------------------
+const STORAGE_KEY = "ielts_pt3_attempt_v1";
+
+let state = loadState() || {
+  candidateName: "",
+  phase: "start",        // start | listening | rw | done
+  answers: {},            // { L1: "...", R1: "...", W1: "...", L11_14: ["A","B"] }
+  submitted: false,
+  currentScreen: "startScreen",
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+// ------------------------------------------------------------------
+// SCREEN NAVIGATION
+// ------------------------------------------------------------------
+const LISTENING_SCREENS = ["listenIntro", "listen1", "listen2", "listen3", "listen4"];
+const RW_SCREENS = ["rwIntro", "reading1", "reading2", "reading3", "writing1", "writing2", "submitScreen"];
+
+function go(screenId) {
+  if (state.phase === "rw" && LISTENING_SCREENS.includes(screenId)) return; // locked out
+  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+  const el = document.getElementById(screenId);
+  if (!el) return;
+  el.classList.remove("hidden");
+  state.currentScreen = screenId;
+  saveState();
+  updateNavHighlight(screenId);
+  markVisited(screenId);
+  if (screenId === "submitScreen") renderSubmitSummary();
+  window.scrollTo(0, 0);
+}
+
+function updateNavHighlight(screenId) {
+  document.querySelectorAll(".navbtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.screen === screenId);
+  });
+}
+
+function markVisited(screenId) {
+  const btn = document.querySelector(`.navbtn[data-screen="${screenId}"]`);
+  if (btn) btn.classList.add("done");
+}
+
+// ------------------------------------------------------------------
+// INIT
+// ------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  wireInputs();
+  wireNavButtons();
+  wireResizeHandles();
+  wireWordCounters();
+
+  document.getElementById("startBtn").addEventListener("click", onStart);
+  document.getElementById("finishListeningBtn").addEventListener("click", onFinishListening);
+  document.getElementById("submitBtn").addEventListener("click", onSubmit);
+
+  restoreUIFromState();
+});
+
+function wireInputs() {
+  document.querySelectorAll("[data-q]").forEach(el => {
+    const key = el.dataset.q;
+    const evt = (el.tagName === "SELECT" || el.type === "radio" || el.type === "checkbox") ? "change" : "input";
+    el.addEventListener(evt, () => {
+      if (el.type === "radio") {
+        state.answers[key] = el.value;
+      } else if (el.type === "checkbox") {
+        // handled by group logic below
+      } else {
+        state.answers[key] = el.value;
+      }
+      saveState();
+    });
+  });
+
+  // checkbox groups (e.g. choose 4 of 7 for L11-14)
+  const groups = {};
+  document.querySelectorAll("[data-qgroup]").forEach(el => {
+    const g = el.dataset.qgroup;
+    groups[g] = groups[g] || [];
+    groups[g].push(el);
+  });
+  Object.keys(groups).forEach(g => {
+    const maxSelect = 4; // fits this test's only checkbox group; adjust if you add more
+    groups[g].forEach(cb => {
+      cb.addEventListener("change", () => {
+        const checked = groups[g].filter(c => c.checked);
+        if (checked.length > maxSelect) {
+          cb.checked = false;
+          return;
+        }
+        state.answers[g] = checked.map(c => c.value);
+        saveState();
+      });
+    });
+  });
+}
+
+function wireNavButtons() {
+  document.querySelectorAll(".navbtn").forEach(btn => {
+    btn.addEventListener("click", () => go(btn.dataset.screen));
+  });
+}
+
+function wireWordCounters() {
+  [["writingArea1", "wc1"], ["writingArea2", "wc2"]].forEach(([taId, countId]) => {
+    const ta = document.getElementById(taId);
+    const out = document.getElementById(countId);
+    const update = () => {
+      const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+      out.textContent = words + " words";
+    };
+    ta.addEventListener("input", update);
+    update();
+  });
+}
+
+function wireResizeHandles() {
+  document.querySelectorAll(".resize-handle").forEach(handle => {
+    let dragging = false;
+    handle.addEventListener("mousedown", (e) => { dragging = true; e.preventDefault(); });
+    window.addEventListener("mouseup", () => dragging = false);
+    window.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const split = handle.parentElement;
+      const rect = split.getBoundingClientRect();
+      const pct = Math.min(80, Math.max(20, ((e.clientX - rect.left) / rect.width) * 100));
+      const passagePane = split.querySelector(".passage");
+      passagePane.style.flex = `0 0 ${pct}%`;
+    });
+  });
+}
+
+// ------------------------------------------------------------------
+// START / TRANSITIONS
+// ------------------------------------------------------------------
+function onStart() {
+  const name = document.getElementById("candidateName").value.trim();
+  if (!name) { alert("Please enter your name first."); return; }
+  state.candidateName = name;
+  state.phase = "listening";
+  document.getElementById("candidateLine").textContent = name;
+  saveState();
+  go("listenIntro");
+}
+
+function onFinishListening() {
+  if (!confirm("You will not be able to return to the Listening section after this. Continue to Reading & Writing?")) return;
+  state.phase = "rw";
+  saveState();
+  applyPhaseUI();
+  go("rwIntro");
+}
+
+function applyPhaseUI() {
+  if (state.phase === "rw" || state.phase === "done") {
+    document.getElementById("navListening").classList.add("hidden");
+    document.getElementById("rwHeading").classList.remove("hidden");
+    document.getElementById("navRW").classList.remove("hidden");
+    document.querySelectorAll('#navListening .navbtn').forEach(b => b.disabled = true);
+  }
+  if (state.candidateName) document.getElementById("candidateLine").textContent = state.candidateName;
+}
+
+
+// ------------------------------------------------------------------
+// RESTORE UI ON LOAD (refresh-safe)
+// ------------------------------------------------------------------
+function restoreUIFromState() {
+  if (state.candidateName) {
+    document.getElementById("candidateName").value = state.candidateName;
+    document.getElementById("candidateLine").textContent = state.candidateName;
+  }
+
+  // repopulate inputs from saved answers
+  document.querySelectorAll("[data-q]").forEach(el => {
+    const key = el.dataset.q;
+    if (!(key in state.answers)) return;
+    if (el.type === "radio") {
+      el.checked = (el.value === state.answers[key]);
+    } else {
+      el.value = state.answers[key];
+    }
+  });
+  document.querySelectorAll("[data-qgroup]").forEach(el => {
+    const g = el.dataset.qgroup;
+    const saved = state.answers[g];
+    if (saved && saved.includes(el.value)) el.checked = true;
+  });
+  wireWordCounters(); // refresh counts after repopulating textareas
+
+  if (state.phase === "rw" || state.phase === "done") {
+    applyPhaseUI();
+  }
+
+  if (state.submitted) {
+    go("doneScreen");
+    document.getElementById("doneMessage").textContent =
+      "Your answers were already submitted for this attempt (" + (state.candidateName || "candidate") + "). Close this window.";
+    return;
+  }
+
+  if (state.phase === "start") { go("startScreen"); return; }
+  go(state.currentScreen && state.currentScreen !== "startScreen" ? state.currentScreen : (state.phase === "rw" ? "rwIntro" : "listenIntro"));
+}
+
+// ------------------------------------------------------------------
+// SUBMIT SUMMARY
+// ------------------------------------------------------------------
+function renderSubmitSummary() {
+  const totalL = 40, totalR = 40;
+  let answeredL = 0, answeredR = 0;
+  for (let i = 1; i <= totalL; i++) if (state.answers["L" + i]) answeredL++;
+  if (state.answers["L11_14"]) answeredL += state.answers["L11_14"].length ? 4 : 0; // approx, since 11-14 share one group
+  for (let i = 1; i <= totalR; i++) if (state.answers["R" + i]) answeredR++;
+  const w1 = (state.answers.W1 || "").trim().split(/\s+/).filter(Boolean).length;
+  const w2 = (state.answers.W2 || "").trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById("submitSummary").innerHTML =
+    `Candidate: <strong>${escapeHtml(state.candidateName)}</strong><br>` +
+    `Listening answered: ~${Math.min(answeredL,40)}/40 &nbsp;·&nbsp; Reading answered: ${answeredR}/40<br>` +
+    `Writing Task 1: ${w1} words &nbsp;·&nbsp; Writing Task 2: ${w2} words`;
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// ------------------------------------------------------------------
+// SUBMIT
+// ------------------------------------------------------------------
+function onSubmit() {
+  if (state.submitted) return;
+  if (!confirm("Submit your test now? You won't be able to change your answers afterwards.")) return;
+
+  state.submitted = true;
+  state.phase = "done";
+  saveState();
+
+  const payload = {
+    candidateName: state.candidateName,
+    submittedAt: new Date().toISOString(),
+    answers: state.answers,
+    writingTask1WordCount: (state.answers.W1 || "").trim().split(/\s+/).filter(Boolean).length,
+    writingTask2WordCount: (state.answers.W2 || "").trim().split(/\s+/).filter(Boolean).length,
+  };
+
+  sendToGoogleSheet(payload);
+
+  go("doneScreen");
+  document.getElementById("doneMessage").textContent =
+    "Your answers have been recorded. You may close this window.";
+}
+
+function sendToGoogleSheet(payload) {
+  if (!CONFIG.GOOGLE_SCRIPT_URL || CONFIG.GOOGLE_SCRIPT_URL.startsWith("PASTE_YOUR")) {
+    console.warn("GOOGLE_SCRIPT_URL is not configured — results were NOT sent anywhere. Saving a local backup copy only.");
+    downloadLocalBackup(payload);
+    return;
+  }
+  // Apps Script web apps don't send CORS headers back for a normal fetch
+  // read, so we POST as text/plain (avoids a CORS preflight) and don't
+  // rely on reading the response.
+  fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+  }).catch(err => {
+    console.error("Could not reach the results sheet — saving a local backup instead.", err);
+    downloadLocalBackup(payload);
+  });
+}
+
+function downloadLocalBackup(payload) {
+  try {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ielts-results-${(payload.candidateName || "candidate").replace(/\s+/g, "_")}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch (e) { console.error("Backup download failed", e); }
+}
+
+</script>
 </body>
 </html>
