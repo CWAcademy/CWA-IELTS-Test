@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Academic — Practice Test 3</title>
+<style>
+  :root{
+    --ink:#1c2b3a;
+    --ink-soft:#3c4c5c;
+    --paper:#f7f5ef;
+    --paper-line:#e4ded0;
+    --rule:#c9c2ad;
+    --brass:#8a6d3b;
+    --signal:#2f6f6d;
+    --signal-dark:#204c4a;
+    --alert:#9c3b34;
+    --alert-bg:#f7e9e7;
+    --ok-bg:#e9f0e1;
+    --serif: "Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans: "Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    --mono: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+  }
+  h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0 0 .4em;color:var(--ink);}
+  .hidden{display:none !important;}
+  button{font-family:var(--sans);cursor:pointer;}
+  input[type=text],textarea,select{font-family:var(--sans);}
+
+  /* ---------- Top bar ---------- */
+  #topbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--ink);color:#f1ede1;
+    padding:.7rem 1.2rem;
+    border-bottom:3px solid var(--brass);
+  }
+  #topbar .brand{font-family:var(--serif);font-size:1.05rem;letter-spacing:.02em;}
+  #topbar .brand small{display:block;font-family:var(--sans);font-size:.68rem;color:#c9c2ad;letter-spacing:.08em;}
+  #timerWrap{display:flex;align-items:center;gap:.6rem;}
+  #timerWrap.hidden{display:none;}
+  #timerLabel{font-size:.72rem;color:#c9c2ad;letter-spacing:.06em;}
+  #timer{
+    font-family:var(--mono);font-size:1.25rem;font-weight:600;
+    background:#0e1822;padding:.25rem .6rem;border-radius:3px;
+    border:1px solid #33465a;color:#f1ede1;
+  }
+  #timer.low{color:#ffb4ac;border-color:var(--alert);}
+
+  /* ---------- Layout shell ---------- */
+  #app{display:flex;min-height:calc(100% - 58px);}
+  #sidebar{
+    width:210px;flex:none;background:#efe9d9;border-right:1px solid var(--paper-line);
+    padding:1rem .75rem;
+  }
+  #sidebar h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);
+    font-family:var(--sans);margin-bottom:.6rem;}
+  .navlist{list-style:none;margin:0 0 1.2rem;padding:0;}
+  .navlist li{margin-bottom:.25rem;}
+  .navbtn{
+    width:100%;text-align:left;background:none;border:1px solid transparent;
+    padding:.45rem .6rem;border-radius:3px;font-size:.86rem;color:var(--ink-soft);
+  }
+  .navbtn:hover{background:#e4ded0;}
+  .navbtn.active{background:var(--signal);color:#fff;border-color:var(--signal-dark);}
+  .navbtn.done::after{content:" ✓";color:var(--signal);}
+  .navbtn.active.done::after{color:#dff2ef;}
+  .navbtn:disabled{opacity:.4;cursor:not-allowed;}
+
+  #main{flex:1;padding:1.4rem 1.8rem 3rem;max-width:1200px;}
+  .screen{max-width:900px;}
+  .screen.wide{max-width:none;}
+
+  .note{
+    background:#fbf3df;border:1px solid #e6d5a5;border-left:4px solid var(--brass);
+    padding:.7rem .9rem;border-radius:2px;font-size:.88rem;margin:1rem 0;color:#5a4522;
+  }
+  .callout{
+    background:#eef4f3;border-left:4px solid var(--signal);padding:.8rem 1rem;border-radius:2px;
+    font-size:.9rem;margin:1rem 0;
+  }
+  .warn{background:var(--alert-bg);border-left:4px solid var(--alert);color:#5c211c;}
+
+  /* ---------- Question blocks ---------- */
+  .qgroup{margin:1.6rem 0;padding-top:1rem;border-top:1px solid var(--paper-line);}
+  .qgroup h3{font-size:1rem;}
+  .qgroup .instructions{font-style:italic;color:var(--ink-soft);font-size:.88rem;margin-bottom:.8rem;}
+  .q{margin:0 0 .9rem;padding:.6rem .8rem;background:#fff;border:1px solid var(--paper-line);border-radius:4px;}
+  .q .qnum{display:inline-block;min-width:1.6rem;font-weight:700;color:var(--signal-dark);font-family:var(--mono);}
+  .q label{cursor:pointer;}
+  .q input[type=text]{
+    border:none;border-bottom:2px solid var(--rule);background:transparent;
+    padding:.15rem .3rem;font-size:.95rem;min-width:140px;color:var(--ink);
+  }
+  .q input[type=text]:focus{outline:none;border-bottom-color:var(--signal);}
+  .q select{border:1px solid var(--rule);border-radius:3px;padding:.2rem .4rem;background:#fff;}
+  .optlist{margin:.4rem 0 0 1.9rem;display:flex;flex-direction:column;gap:.25rem;}
+  .optlist label{font-size:.92rem;display:flex;gap:.5rem;align-items:flex-start;}
+  .optlist input{margin-top:.2rem;}
+  .maxhint{color:var(--ink-soft);font-size:.78rem;margin-left:1.9rem;}
+
+  /* ---------- Reading split screen ---------- */
+  #readingScreen{max-width:none;}
+  .split{
+    display:flex;gap:0;border:1px solid var(--paper-line);border-radius:4px;overflow:hidden;
+    height:calc(100vh - 230px);min-height:420px;
+  }
+  .pane{flex:1;overflow-y:auto;padding:1.2rem 1.4rem;background:#fff;}
+  .pane.passage{background:#fffdf6;border-right:1px solid var(--paper-line);font-family:var(--serif);font-size:1.02rem;}
+  .pane.passage p{margin:0 0 .9rem;}
+  .pane.passage .para-label{font-weight:700;color:var(--signal-dark);margin-right:.4em;font-family:var(--sans);}
+  .passage-title{font-family:var(--serif);font-size:1.3rem;margin-bottom:.9rem;text-align:center;}
+  .resize-handle{width:6px;flex:none;background:var(--paper-line);cursor:col-resize;}
+  .resize-handle:hover{background:var(--brass);}
+
+  .tabrow{display:flex;gap:.4rem;margin-bottom:.9rem;flex-wrap:wrap;}
+  .tabbtn{
+    padding:.4rem .9rem;border:1px solid var(--rule);background:#efe9d9;border-radius:20px;
+    font-size:.82rem;color:var(--ink-soft);
+  }
+  .tabbtn.active{background:var(--ink);color:#f1ede1;border-color:var(--ink);}
+
+  /* ---------- Writing ---------- */
+  .writing-box textarea{
+    width:100%;min-height:340px;border:1px solid var(--rule);border-radius:4px;
+    padding:.9rem 1rem;font-size:1rem;line-height:1.6;resize:vertical;font-family:var(--serif);
+  }
+  .writing-box textarea:focus{outline:none;border-color:var(--signal);}
+  .wordcount{font-size:.82rem;color:var(--ink-soft);margin-top:.4rem;font-family:var(--mono);}
+  .prompt-block{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:1rem 1.2rem;margin-bottom:1rem;}
+  table.datatable{border-collapse:collapse;width:100%;margin:.8rem 0;font-size:.88rem;}
+  table.datatable th,table.datatable td{border:1px solid var(--rule);padding:.4rem .6rem;text-align:center;}
+  table.datatable th{background:#efe9d9;font-family:var(--sans);}
+
+  /* ---------- Buttons ---------- */
+  .btnrow{display:flex;gap:.7rem;margin-top:1.6rem;flex-wrap:wrap;}
+  .btn{
+    padding:.6rem 1.3rem;border-radius:3px;border:1px solid var(--ink);background:var(--ink);color:#fff;
+    font-size:.92rem;letter-spacing:.01em;
+  }
+  .btn:hover{background:#0e1822;}
+  .btn.secondary{background:transparent;color:var(--ink);border-color:var(--rule);}
+  .btn.secondary:hover{background:#efe9d9;}
+  .btn.danger{background:var(--alert);border-color:var(--alert);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  .startcard{max-width:560px;margin:2.4rem auto;background:#fff;border:1px solid var(--paper-line);
+    border-radius:6px;padding:2rem 2.2rem;}
+  .startcard label{display:block;font-size:.85rem;color:var(--ink-soft);margin-bottom:.3rem;}
+  .startcard input[type=text]{width:100%;padding:.55rem .7rem;border:1px solid var(--rule);border-radius:3px;
+    font-size:1rem;margin-bottom:1.2rem;}
+
+  .barchart{display:flex;align-items:flex-end;gap:1.4rem;height:150px;margin:.6rem 0 .3rem;padding-left:1.6rem;position:relative;}
+  .barchart .bar{width:46px;background:var(--signal);position:relative;}
+  .barchart .bar span{position:absolute;top:-1.2rem;left:0;right:0;text-align:center;font-size:.72rem;color:var(--ink-soft);}
+  .barlabels{display:flex;gap:1.4rem;padding-left:1.6rem;font-size:.7rem;color:var(--ink-soft);}
+  .barlabels div{width:46px;text-align:center;}
+  .chartaxis{position:absolute;left:0;top:0;bottom:0;width:1.6rem;display:flex;flex-direction:column;justify-content:space-between;font-size:.65rem;color:var(--ink-soft);}
+
+  footer.appfoot{padding:2rem;text-align:center;font-size:.78rem;color:var(--ink-soft);}
+
+  @media (max-width:860px){
+    #app{flex-direction:column;}
+    #sidebar{width:auto;display:flex;overflow-x:auto;}
+    .navlist{display:flex;gap:.3rem;margin:0;}
+    .split{flex-direction:column;height:auto;}
+    .pane{max-height:50vh;}
+    .resize-handle{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="brand">IELTS Academic — Practice Test 3<small id="candidateLine">&nbsp;</small></div>
+  <div id="timerWrap" class="hidden">
+    <span id="timerLabel">Reading &amp; Writing time remaining</span>
+    <span id="timer">2:00:00</span>
+  </div>
+</div>
+
+<div id="app">
+  <nav id="sidebar">
+    <h3>Listening</h3>
+    <ul class="navlist" id="navListening">
+      <li><button class="navbtn" data-screen="listenIntro">Instructions</button></li>
+      <li><button class="navbtn" data-screen="listen1">Section 1 (Q1–10)</button></li>
+      <li><button class="navbtn" data-screen="listen2">Section 2 (Q11–20)</button></li>
+      <li><button class="navbtn" data-screen="listen3">Section 3 (Q21–30)</button></li>
+      <li><button class="navbtn" data-screen="listen4">Section 4 (Q31–40)</button></li>
+    </ul>
+    <h3 id="rwHeading" class="hidden">Reading &amp; Writing</h3>
+    <ul class="navlist hidden" id="navRW">
+      <li><button class="navbtn" data-screen="rwIntro">Instructions</button></li>
+      <li><button class="navbtn" data-screen="reading1">Reading 1 (Q1–14)</button></li>
+      <li><button class="navbtn" data-screen="reading2">Reading 2 (Q15–28)</button></li>
+      <li><button class="navbtn" data-screen="reading3">Reading 3 (Q29–40)</button></li>
+      <li><button class="navbtn" data-screen="writing1">Writing Task 1</button></li>
+      <li><button class="navbtn" data-screen="writing2">Writing Task 2</button></li>
+      <li><button class="navbtn" data-screen="submitScreen">Review &amp; Submit</button></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+
+  <!-- ============ START ============ -->
+  <section class="screen" id="startScreen">
+    <div class="startcard">
+      <h1>Before you begin</h1>
+      <p>Enter your name to start the Listening module. Your progress is saved automatically in this browser as you go.</p>
+      <label for="candidateName">Full name</label>
+      <input type="text" id="candidateName" placeholder="e.g. Juan Dela Cruz">
+      <div class="note">This test has no audio files loaded yet — see the note on the first Listening screen. You can still answer every question type to check the tool works.</div>
+      <button class="btn" id="startBtn">Begin Listening Module</button>
+    </div>
+  </section>
+
+  <!-- ============ LISTENING INTRO ============ -->
+  <section class="screen hidden" id="listenIntro">
+    <h1>Listening Module</h1>
+    <p>You will hear four recordings and answer 40 questions. Each recording is played once. Write your answers as you listen, then move to the next section.</p>
+    <div class="note"><strong>Audio note:</strong> the source material references "Practice Test 3, Track 1–4." No audio files were supplied with this test, so the players below are placeholders. To finish setting this test up, add your own MP3s to an <code>audio/</code> folder next to this file and point each <code>&lt;audio&gt;</code> tag's <code>src</code> at the right track (search the HTML for <code>AUDIO SOURCE NEEDED</code>).</div>
+    <div class="btnrow"><button class="btn" onclick="go('listen1')">Start Section 1 →</button></div>
+  </section>
+
+  <!-- ============ LISTENING 1 ============ -->
+  <section class="screen hidden" id="listen1">
+    <h1>Section 1 — Questions 1–10</h1>
+    <audio controls style="width:100%;margin-bottom:1rem;">
+      <source src="audio/track1-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
+      Your browser does not support audio playback.
+    </audio>
+    <div class="qgroup">
+      <h3>Questions 1–6</h3>
+      <p class="instructions">Complete the form below, using NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.</p>
+      <div class="prompt-block">
+        <p style="text-align:center;font-weight:600;">EXPENSES CLAIM INFORMATION – GB AIRLINES</p>
+        <p>Customer name: Mr <span class="qnum">1</span> <input type="text" data-q="L1"></p>
+        <p>Date of Departure: <span class="qnum">2</span> <input type="text" data-q="L2"> 2016</p>
+        <p>Flight Number: GB1011</p>
+        <p>Flight: From <span class="qnum">3</span> <input type="text" data-q="L3"> to London Heathrow, UK</p>
+        <p>Departure Time: <span class="qnum">4</span> <input type="text" data-q="L4"> p.m.</p>
+        <p>Expenses Claimed: <span class="qnum">5</span> <input type="text" data-q="L5"> Hotel, 73 euros</p>
+        <p>Taxis, <span class="qnum">6</span> <input type="text" data-q="L6"></p>
+      </div>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 7–10</h3>
+      <p class="instructions">Complete the sentences below with NO MORE THAN TWO WORDS AND/OR A NUMBER.</p>
+      <div class="q"><span class="qnum">7</span> The customer had the <input type="text" data-q="L7"> option for his previous flight.</div>
+      <div class="q"><span class="qnum">8</span> There are three meal options without meat: vegetarian, vegan, and <input type="text" data-q="L8">.</div>
+      <div class="q"><span class="qnum">9</span> The vegan option doesn't contain any <input type="text" data-q="L9">, eggs, fowl, or honey.</div>
+      <div class="q"><span class="qnum">10</span> The meal option for the customer's flight to Kiev must be changed <input type="text" data-q="L10"> before the departure time.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('listenIntro')">← Back</button>
+      <button class="btn" onclick="go('listen2')">Next: Section 2 →</button>
+    </div>
+  </section>
+
+  <!-- ============ LISTENING 2 ============ -->
+  <section class="screen hidden" id="listen2">
+    <h1>Section 2 — Questions 11–20</h1>
+    <audio controls style="width:100%;margin-bottom:1rem;">
+      <source src="audio/track2-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
+    </audio>
+    <div class="qgroup">
+      <h3>Questions 11–14</h3>
+      <p class="instructions">You are going to hear a radio interview with a self-publishing expert. What FOUR things does she say new writers need to make sure they have before they self-publish?</p>
+      <div class="optlist" id="q11group">
+        <label><input type="checkbox" data-qgroup="L11_14" value="A"> A. an impeccably edited novel</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="B"> B. another finished novel</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="C"> C. a budget</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="D"> D. a solid marketing plan</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="E"> E. a new novel in progress</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="F"> F. a lot of money on the side</label>
+        <label><input type="checkbox" data-qgroup="L11_14" value="G"> G. a good understanding of grammar</label>
+      </div>
+      <p class="maxhint">Select exactly four options (11–14).</p>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 15–17</h3>
+      <p class="instructions">Choose the correct letter, A, B or C.</p>
+      <div class="q"><span class="qnum">15</span> Patricia Abaddon's first novel
+        <div class="optlist">
+          <label><input type="radio" name="L15" data-q="L15" value="A"> A. was a commercial success.</label>
+          <label><input type="radio" name="L15" data-q="L15" value="B"> B. had mediocre sales.</label>
+          <label><input type="radio" name="L15" data-q="L15" value="C"> C. performed terribly.</label>
+        </div>
+      </div>
+      <div class="q"><span class="qnum">16</span> For the first year after his novel's publication, Patricia Abaddon
+        <div class="optlist">
+          <label><input type="radio" name="L16" data-q="L16" value="A"> A. avoided checking how many copies he sold.</label>
+          <label><input type="radio" name="L16" data-q="L16" value="B"> B. was depressed about the results.</label>
+          <label><input type="radio" name="L16" data-q="L16" value="C"> C. was relatively happy with how the novel was doing.</label>
+        </div>
+      </div>
+      <div class="q"><span class="qnum">17</span> Patricia Abaddon subscribed to writing magazines because
+        <div class="optlist">
+          <label><input type="radio" name="L17" data-q="L17" value="A"> A. she wanted to find out about writing competitions.</label>
+          <label><input type="radio" name="L17" data-q="L17" value="B"> B. it was a good way to build a fan base.</label>
+          <label><input type="radio" name="L17" data-q="L17" value="C"> C. she wanted to read advice from professionals.</label>
+        </div>
+      </div>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 18–20</h3>
+      <p class="instructions">Complete the sentences below with NO MORE THAN THREE WORDS.</p>
+      <div class="q"><span class="qnum">18</span> Patricia Abaddon published her second novel under a <input type="text" data-q="L18"> because she didn't want her readers to know about her first novel.</div>
+      <div class="q"><span class="qnum">19</span> Patricia Abaddon used her website and her pages on <input type="text" data-q="L19"> to promote her second novel.</div>
+      <div class="q"><span class="qnum">20</span> By the time her second novel was out, Patricia Abaddon wanted her third novel to be <input type="text" data-q="L20">.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('listen1')">← Back</button>
+      <button class="btn" onclick="go('listen3')">Next: Section 3 →</button>
+    </div>
+  </section>
+
+  <!-- ============ LISTENING 3 ============ -->
+  <section class="screen hidden" id="listen3">
+    <h1>Section 3 — Questions 21–30</h1>
+    <audio controls style="width:100%;margin-bottom:1rem;">
+      <source src="audio/track3-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
+    </audio>
+    <div class="qgroup">
+      <h3>Question 21</h3>
+      <p class="instructions">Which graph shows what students reported feeling after a year at school?</p>
+      <div class="optlist" style="margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
+        <div>
+          <strong>A</strong>
+          <div class="barchart"><div class="chartaxis"><span>60</span><span>30</span><span>0</span></div>
+            <div class="bar" style="height:63%"></div><div class="bar" style="height:17%"></div><div class="bar" style="height:87%"></div></div>
+          <div class="barlabels"><div>Dropped out</div><div>Happy all year</div><div>Sad, no drop</div></div>
+        </div>
+        <div>
+          <strong>B</strong>
+          <div class="barchart"><div class="chartaxis"><span>60</span><span>30</span><span>0</span></div>
+            <div class="bar" style="height:30%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:87%"></div></div>
+          <div class="barlabels"><div>Dropped out</div><div>Happy all year</div><div>Sad, no drop</div></div>
+        </div>
+        <div>
+          <strong>C</strong>
+          <div class="barchart"><div class="chartaxis"><span>80</span><span>40</span><span>0</span></div>
+            <div class="bar" style="height:86%"></div><div class="bar" style="height:12%"></div><div class="bar" style="height:27%"></div></div>
+          <div class="barlabels"><div>Dropped out</div><div>Happy all year</div><div>Sad, no drop</div></div>
+        </div>
+        <div>
+          <strong>D</strong>
+          <div class="barchart"><div class="chartaxis"><span>60</span><span>30</span><span>0</span></div>
+            <div class="bar" style="height:63%"></div><div class="bar" style="height:87%"></div><div class="bar" style="height:17%"></div></div>
+          <div class="barlabels"><div>Dropped out</div><div>Happy all year</div><div>Sad, no drop</div></div>
+        </div>
+      </div>
+      <div class="q" style="margin-top:1rem;"><span class="qnum">21</span> Answer:
+        <select data-q="L21">
+          <option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option>
+        </select>
+      </div>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 22–25</h3>
+      <p class="instructions">Which student will present which information? A = Gale, B = Lindsay, C = Kevin.</p>
+      <div class="q"><span class="qnum">22</span> the research focus —
+        <select data-q="L22"><option value="">—</option><option>A</option><option>B</option><option>C</option></select></div>
+      <div class="q"><span class="qnum">23</span> the focus group of the research —
+        <select data-q="L23"><option value="">—</option><option>A</option><option>B</option><option>C</option></select></div>
+      <div class="q"><span class="qnum">24</span> how the students acquired access to the focus group —
+        <select data-q="L24"><option value="">—</option><option>A</option><option>B</option><option>C</option></select></div>
+      <div class="q"><span class="qnum">25</span> the structure of the survey used in the research —
+        <select data-q="L25"><option value="">—</option><option>A</option><option>B</option><option>C</option></select></div>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 26–30</h3>
+      <p class="instructions">Complete the sentences below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.</p>
+      <div class="q"><span class="qnum">26</span> The number of males and females participating in the study was <input type="text" data-q="L26">.</div>
+      <div class="q"><span class="qnum">27</span> <input type="text" data-q="L27"> per cent of the participants came from Europe.</div>
+      <div class="q"><span class="qnum">28</span> The vast majority of the participants were 20 or 21 years old, and only <input type="text" data-q="L28"> per cent were 19.</div>
+      <div class="q"><span class="qnum">29</span> Most participants reported missing home and/or suffering from <input type="text" data-q="L29"> at the start of their course.</div>
+      <div class="q"><span class="qnum">30</span> The students examined the <input type="text" data-q="L30"> of the previous two years to ensure the numbers in their research were as accurate as possible.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('listen2')">← Back</button>
+      <button class="btn" onclick="go('listen4')">Next: Section 4 →</button>
+    </div>
+  </section>
+
+  <!-- ============ LISTENING 4 ============ -->
+  <section class="screen hidden" id="listen4">
+    <h1>Section 4 — Questions 31–40</h1>
+    <audio controls style="width:100%;margin-bottom:1rem;">
+      <source src="audio/track4-AUDIO-SOURCE-NEEDED.mp3" type="audio/mpeg">
+    </audio>
+    <div class="qgroup">
+      <h3>Questions 31–37</h3>
+      <p class="instructions">Answer the questions below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.</p>
+      <div class="q"><span class="qnum">31</span> How many English speakers are there around the world today? <input type="text" data-q="L31"></div>
+      <div class="q"><span class="qnum">32</span> Aside from French, which other language does the speaker say was more widely spoken than English in the 19th century? <input type="text" data-q="L32"></div>
+      <div class="q"><span class="qnum">33</span> Who does the speaker believe will determine the future of English? <input type="text" data-q="L33"></div>
+      <div class="q"><span class="qnum">34</span> What is the alternative name for English pidgin and creole languages? <input type="text" data-q="L34"></div>
+      <div class="q"><span class="qnum">35</span> What does "longi" mean? <input type="text" data-q="L35"></div>
+      <div class="q"><span class="qnum">36</span> According to the speaker, which language has a history which is very similar to English? <input type="text" data-q="L36"></div>
+      <div class="q"><span class="qnum">37</span> What kind of languages are Spanish, French, and Italian? <input type="text" data-q="L37"></div>
+    </div>
+    <div class="qgroup">
+      <h3>Questions 38–40</h3>
+      <p class="instructions">Choose the correct letter, A, B, or C.</p>
+      <div class="q"><span class="qnum">38</span> The speaker says that Jamaican and South African English
+        <div class="optlist">
+          <label><input type="radio" name="L38" data-q="L38" value="A"> A. are very traditional languages.</label>
+          <label><input type="radio" name="L38" data-q="L38" value="B"> B. have greatly influenced the English language.</label>
+          <label><input type="radio" name="L38" data-q="L38" value="C"> C. were created very recently.</label>
+        </div>
+      </div>
+      <div class="q"><span class="qnum">39</span> According to the second theory mentioned by the speaker, English
+        <div class="optlist">
+          <label><input type="radio" name="L39" data-q="L39" value="A"> A. might lose some of its more complex features on a global level.</label>
+          <label><input type="radio" name="L39" data-q="L39" value="B"> B. might become even more complicated than it is now.</label>
+          <label><input type="radio" name="L39" data-q="L39" value="C"> C. might be called 'Globish'.</label>
+        </div>
+      </div>
+      <div class="q"><span class="qnum">40</span> English is a unique language because
+        <div class="optlist">
+          <label><input type="radio" name="L40" data-q="L40" value="A"> A. it has the largest number of speakers in the world.</label>
+          <label><input type="radio" name="L40" data-q="L40" value="B"> B. it hasn't changed much throughout human history.</label>
+          <label><input type="radio" name="L40" data-q="L40" value="C"> C. it's spoken by a larger number of non-natives than any other language.</label>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn">
+      <strong>This ends the Listening module.</strong> Once you click below, you will move to Reading &amp; Writing, the 2‑hour timer starts immediately, and you will <u>not</u> be able to return to Listening.
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('listen3')">← Back</button>
+      <button class="btn danger" id="finishListeningBtn">Finish Listening &amp; Start Reading/Writing (2:00:00) →</button>
+    </div>
+  </section>
+
+  <!-- ============ RW INTRO ============ -->
+  <section class="screen hidden" id="rwIntro">
+    <h1>Reading &amp; Writing — 2 hours total</h1>
+    <p>You have <strong>2 hours</strong> to complete three Reading passages (40 questions) and two Writing tasks. The timer started when you left Listening and keeps running even if you close this tab — it is based on the clock, not on time spent on-screen. When time runs out, your answers submit automatically.</p>
+    <div class="callout">Use the left‑hand menu to move between Reading passages and Writing tasks in any order. Recommended timing: about 60 minutes for Reading, about 60 minutes for Writing (20 for Task 1, 40 for Task 2) — but nothing is locked between sections.</div>
+    <div class="btnrow"><button class="btn" onclick="go('reading1')">Go to Reading Passage 1 →</button></div>
+  </section>
+
+  <!-- ============ READING 1 ============ -->
+  <section class="screen hidden wide" id="reading1">
+    <h1>Reading Passage 1 — Questions 1–14</h1>
+    <div class="split">
+      <div class="pane passage">
+        <div class="passage-title">Synaesthesia</div>
+        <p><span class="para-label">A</span>Imagine a page with a square box in the middle. The box is lined with rows of the number 5, repeated over and over. All of the 5s are identical in size, font and colour, and equally distributed across the box. There is, however, a trick: among those 5s, hiding in plain sight is a single, capital letter S. Almost the same in shape, it is impossible to spot without straining your eyes for a good few minutes. Unless, that is, you are a grapheme–colour synaesthete — a person who sees each letter and number in different colours. With all the 5s painted in one colour and the rogue S painted in another, a grapheme–colour synaesthete will usually only need a split second to identify the latter.</p>
+        <p><span class="para-label">B</span>Synaesthesia, loosely translated as "senses coming together" from the Greek words syn ("with") and aesthesis ("sensation"), is an interesting neurological phenomenon that causes different senses to be combined. This might mean that words have a particular taste (for example, the word "door" might taste like bacon), or that certain smells produce a particular colour. It might also mean that each letter and number has its own personality — the letter A might be perky, the letter B might be shy and self-conscious, etc. Some synaesthetes might even experience other people's sensations, for example feeling pain in their chest when they witness a film character get shot. The possibilities are endless: even though synaesthesia is believed to affect less than 5% of the general population, at least 60 different combinations of senses have been reported so far. What all these sensory associations have in common is that they are all involuntary and impossible to repress, and that they usually remain quite stable over time.</p>
+        <p><span class="para-label">C</span>Synaesthesia was first documented in the early 19th century by German physician Georg Sachs, who dedicated two pages of his dissertation on his own experience with the condition. It wasn't, however, until the mid-1990s that empirical research proved its existence, when Professor Simon Baron-Cohen and his colleagues used fMRIs on six synaesthetes and discovered that the parts of the brain associated with vision were active during auditory stimulation, even though the subjects were blindfolded.</p>
+        <p><span class="para-label">D</span>What makes synaesthesia a particularly interesting condition is that it isn't an illness at all. If anything, synaesthetes often report feeling sorry for the rest of the population, as they don't have the opportunity to experience the world in a multisensory fashion like they do. Very few drawbacks have been described, usually minimal: for instance, some words might have an unpleasant taste (imagine the word "hello" tasting like spoilt milk), while some synaesthetes find it distressing when they encounter people with names which don't reflect their personality (imagine meeting a very interesting person named "Lee", when the letter E has a dull or hideous colour for you — or vice versa). Overall, however, synaesthesia is widely considered more of a blessing than a curse and it is often linked to intelligence and creativity, with celebrities such as Lady Gaga and Pharrell Williams claiming to have it.</p>
+        <p><span class="para-label">E</span>Another fascinating side of synaesthesia is the way it could potentially benefit future generations. In a 2013 study, Dr Witthoft and Dr Winawer discovered that grapheme–colour synaesthetes who had never met each other before experienced strikingly similar pairings between graphemes and colours — pairings which were later traced back to a popular set of Fischer-Price magnets that ten out of eleven participants distinctly remembered possessing as children. This was particularly peculiar as synaesthesia is predominantly considered to be a hereditary condition, and the findings suggested that a synaesthete's environment might play a determining role in establishing synaesthetic associations. If that was true, researchers asked, then might it not be possible that synaesthesia can actually be taught?</p>
+        <p><span class="para-label">F</span>As it turns out, the benefits of teaching synaesthesia would be tremendous. According to research conducted by Dr Clare Jonas at the University of East London, teaching people to create grapheme–colour associations the same way as a synaesthete may have the possibility to improve cognitive function and memory. As she put it, "one possibility is guarding against cognitive decline in older people — using synaesthesia in the creation of mnemonics to remember things such as shopping lists." To that end, researchers in the Netherlands have already begun developing a web browser plug-in that will change the colours of certain letters. Rothen and his colleagues corroborate the theory: in a paper published in 2011, they suggest that synaesthesia might be more than a hereditary condition, as the non-synaesthetic subjects of their study were able to mimic synaesthetic associations long after leaving the lab.</p>
+        <p><span class="para-label">G</span>There is obviously still a long way to go before we can fully understand synaesthesia and what causes it. Once we do, however, it might not be too long before we find out how to teach non-synaesthetes how to imitate its symptoms in a way that induces the same benefits 4.4% of the world's population currently enjoy.</p>
+      </div>
+      <div class="resize-handle" data-split="reading1"></div>
+      <div class="pane questions">
+        <div class="qgroup" style="margin-top:0;border-top:none;padding-top:0;">
+          <h3>Questions 1–7</h3>
+          <p class="instructions">The reading passage has 7 paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G.</p>
+          <div class="q"><span class="qnum">1</span> some of the disadvantages related to synaesthesia — <select data-q="R1"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">2</span> what scientists think about synaesthesia's real-life usefulness — <select data-q="R2"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">3</span> a prediction for the future of synaesthesia — <select data-q="R3"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">4</span> an example of how grapheme–colour synaesthesia works — <select data-q="R4"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">5</span> a brief history of synaesthesia — <select data-q="R5"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">6</span> some of the various different types of synaesthesia — <select data-q="R6"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">7</span> information about a study that suggests synaesthetic symptoms aren't arbitrary — <select data-q="R7"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 8–11</h3>
+          <p class="instructions">Do the following statements agree with the information given in the passage? TRUE / FALSE / NOT GIVEN.</p>
+          <div class="q"><span class="qnum">8</span> There are 60 different types of synaesthesia. <select data-q="R8"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div>
+          <div class="q"><span class="qnum">9</span> Before Professor Simon Baron-Cohen's research, synaesthesia was thought to be a myth. <select data-q="R9"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div>
+          <div class="q"><span class="qnum">10</span> A lot of celebrities are affected by synaesthesia. <select data-q="R10"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div>
+          <div class="q"><span class="qnum">11</span> Most scientists believe that synaesthesia runs in families. <select data-q="R11"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 12–14</h3>
+          <p class="instructions">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p>
+          <div class="prompt-block">
+            <p>Synaesthesia is a unique neurological condition that causes different senses to get mixed. Recent research has suggested that teaching synaesthesia to non-synaesthetes can enhance <span class="qnum">12</span> <input type="text" data-q="R12"> and guard against the deterioration of cognitive <span class="qnum">13</span> <input type="text" data-q="R13">; unfortunately, it might be a while before we come up with a beneficial way to <span class="qnum">14</span> <input type="text" data-q="R14"> it to the general population.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('rwIntro')">← Instructions</button>
+      <button class="btn" onclick="go('reading2')">Next: Reading Passage 2 →</button>
+    </div>
+  </section>
+
+  <!-- ============ READING 2 ============ -->
+  <section class="screen hidden wide" id="reading2">
+    <h1>Reading Passage 2 — Questions 15–28</h1>
+    <div class="split">
+      <div class="pane passage">
+        <div class="passage-title">The Taman Shud Case</div>
+        <p>It has been more than 65 years since the Taman Shud case was first opened, but this notoriously bizarre murder mystery from Australia continues to baffle scientific investigators and crime aficionados from around the world today.</p>
+        <p>On the morning of 1st December 1948, the body of an unidentified man was discovered propped against a rock wall on Somerton beach in Adelaide, opposite the Crippled Children's home. The man was around 40–45 years old, had an athletic figure and was dressed in a smart suit and tie. He had no form of ID on him and all the labels on his clothes had been removed. The only things found on his body were an unused 10:50 a.m. ticket from Adelaide Railway Station to Henley Beach for the 30th November, a packet of chewing gums, an aluminium comb, a packet of cigarettes, a box of Bryan &amp; May matches, sixpence and a small piece of paper with the words "Tamám shud" printed on it — which means "ended" or "finished" in Persian. To make matters more interesting, the autopsy revealed that his death had been unnatural, but determined no cause of death: although he had clearly died of heart failure, his heart had been healthy and no signs of violence or poisoning were discovered in his system.</p>
+        <p>The case garnered media attention almost immediately, with dozens of people with missing friends and relatives travelling to Adelaide to have a look at the Somerton man's body — but none of them being able to positively identify him. The next piece of evidence came when a journalist named Frank Kennedy discovered that the piece of paper with the printed words had been ripped from the last page of The Rubáiyát of Omar Khayyám, a book of collected poems by Omar Khayyám, an 11th century Persian poet. Following pleas by the police for the public to check their copies of The Rubáiyát for any missing pages, a local man brought in the correct copy, which he reported having found in the back seat of his car six months earlier, around the time the corpse had been discovered.</p>
+        <p>This is where things get even more complicated: in the back of the book, police discovered five lines of letters that appeared to be some sort of secret code. In the back cover, they also found a phone number which led them to a 27-year-old woman known as "Jestyn" who lived on Moseley Street, a stone's throw from the crime scene. Jestyn denied any knowledge of the man and was generally guarded and non-committal throughout the police interview. Nevertheless, the police decided not to pursue the lead. As for the code? Despite years of research by cryptology experts and students, no one has managed to crack it to this day.</p>
+        <p>It's not just the mysterious code, however, that makes this case so popular with crime fans. It's been more than half a century since the man's death, but his identity is still a mystery. Although copies of the victim's fingerprints and photograph, as well as the name "T. Keane" (which was written on some labels found in his suitcase) were sent around the world to all Commonwealth countries, the search turned up no results. Some theories regarding the man's origins have arisen over the years, with many believing that he was American due to the predominantly US way the stripes slanted on his tie, his aluminium comb (rare in Australia at the time) and the belief that Americans were far more likely to chew gum than Australians in the 1940s. Others also theorise that he was Jestyn's lover, and perhaps even a Soviet spy agent — although this all still remains just speculation for now.</p>
+        <p>Interest in the case was rekindled in 2013, following an interview on the show 60 Minutes with Kate Thompson, the daughter of "Jestyn" — whose actual name was revealed to be Jo Thompson. Kate Thompson claimed that her mother had lied to the police about not knowing the Somerton Man. She also said her mother was a Soviet spy with a "dark side" and that she might've been responsible for the man's murder. Also participating in the show were Roma and Rachel Egan, wife and daughter respectively of Kate Thompson's late brother Robin, whom many believe to have been the Somerton man's son. The two women have backed a request to get the man's body exhumed in the interest of proving this claim, which they also believe to be correct. A similar bid had been rejected previously in 2011 by Attorney-General John Rau, citing insufficient "public interest reasons". There is currently a petition on Change.org, as well as an Indiegogo campaign to raise funds in support of solving the case.</p>
+      </div>
+      <div class="resize-handle" data-split="reading2"></div>
+      <div class="pane questions">
+        <div class="qgroup" style="margin-top:0;border-top:none;padding-top:0;">
+          <h3>Questions 15–20</h3>
+          <p class="instructions">Complete the timeline below. Choose NO MORE THAN THREE WORDS from the passage for each answer.</p>
+          <div class="prompt-block">
+            <p>1948, November 30th — The Somerton Man misses a train to <span class="qnum">15</span> <input type="text" data-q="R15"></p>
+            <p>1948, December 1st — The Somerton Man's body is discovered on Somerton beach</p>
+            <p>1948, December 2nd — Post mortem reveals no <span class="qnum">16</span> <input type="text" data-q="R16"></p>
+            <p>1949, January 14th — Adelaide Railway Station discover deceased man's suitcase</p>
+            <p>1949, July 22nd — A businessman from Somerton hands in copy of poem book that contains the <span class="qnum">17</span> <input type="text" data-q="R17"> and Jestyn's <span class="qnum">18</span> <input type="text" data-q="R18"></p>
+            <p>1949, July 25th — Police visit Jestyn at her house on <span class="qnum">19</span> <input type="text" data-q="R19"> to speak with her — she remains <span class="qnum">20</span> <input type="text" data-q="R20"> during questioning</p>
+          </div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 21–24</h3>
+          <p class="instructions">Complete each sentence with the correct ending A–G below.</p>
+          <div class="optlist" style="margin-left:0;">
+            <div>A. believes her daughter is related to the Somerton man.</div>
+            <div>B. has tried to solve it for decades with no results.</div>
+            <div>C. was revealed by her daughter in 2013.</div>
+            <div>D. inadvertently assisted the police in their investigation.</div>
+            <div>E. was only named as "Jestyn".</div>
+            <div>F. remains a mystery.</div>
+            <div>G. revealed that Jo Thompson was a cruel Soviet spy.</div>
+          </div>
+          <div class="q"><span class="qnum">21</span> The code written on the back of The Rubáiyát of Omar Khayyám — <select data-q="R21"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">22</span> Journalist Frank Kennedy — <select data-q="R22"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">23</span> The identity of the woman to whom the phone number belonged — <select data-q="R23"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+          <div class="q"><span class="qnum">24</span> Kate Thompson's sister-in-law — <select data-q="R24"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 25–28</h3>
+          <p class="instructions">Choose the correct letter, A, B, C or D.</p>
+          <div class="q"><span class="qnum">25</span> According to the autopsy on the Somerton man
+            <div class="optlist">
+              <label><input type="radio" name="R25" data-q="R25" value="A"> A. his heart failed for no reason.</label>
+              <label><input type="radio" name="R25" data-q="R25" value="B"> B. there were traces of poison in his system.</label>
+              <label><input type="radio" name="R25" data-q="R25" value="C"> C. he was physically fit.</label>
+              <label><input type="radio" name="R25" data-q="R25" value="D"> D. there was nothing wrong with his heart.</label>
+            </div>
+          </div>
+          <div class="q"><span class="qnum">26</span> The copy of The Rubáiyát of Omar Khayyám with the missing page
+            <div class="optlist">
+              <label><input type="radio" name="R26" data-q="R26" value="A"> A. was discovered in a local man's garage.</label>
+              <label><input type="radio" name="R26" data-q="R26" value="B"> B. was in a local man's possession for six months after the murder.</label>
+              <label><input type="radio" name="R26" data-q="R26" value="C"> C. was discovered by a local man six months after the murder.</label>
+              <label><input type="radio" name="R26" data-q="R26" value="D"> D. was found by journalist Frank Kennedy.</label>
+            </div>
+          </div>
+          <div class="q"><span class="qnum">27</span> One of the reasons many believe that the Somerton Man was American is that
+            <div class="optlist">
+              <label><input type="radio" name="R27" data-q="R27" value="A"> A. he wasn't found in any database in Commonwealth countries.</label>
+              <label><input type="radio" name="R27" data-q="R27" value="B"> B. he had been chewing a gum before his death.</label>
+              <label><input type="radio" name="R27" data-q="R27" value="C"> C. his tie had an American pattern of stripes.</label>
+              <label><input type="radio" name="R27" data-q="R27" value="D"> D. the name "T. Keane" was found in his suitcase.</label>
+            </div>
+          </div>
+          <div class="q"><span class="qnum">28</span> Roma and Rachel Egan
+            <div class="optlist">
+              <label><input type="radio" name="R28" data-q="R28" value="A"> A. are critical of attempts to exhume the Somerton man's body.</label>
+              <label><input type="radio" name="R28" data-q="R28" value="B"> B. disagree that Robin Thompson was the Somerton man's son.</label>
+              <label><input type="radio" name="R28" data-q="R28" value="C"> C. backed the request that was rejected in 2011 by Rau.</label>
+              <label><input type="radio" name="R28" data-q="R28" value="D"> D. voiced their beliefs on the same programme as Kate Thompson.</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('reading1')">← Reading 1</button>
+      <button class="btn" onclick="go('reading3')">Next: Reading Passage 3 →</button>
+    </div>
+  </section>
+
+  <!-- ============ READING 3 ============ -->
+  <section class="screen hidden wide" id="reading3">
+    <h1>Reading Passage 3 — Questions 29–40</h1>
+    <div class="split">
+      <div class="pane passage">
+        <div class="passage-title">Coinage in Ancient Greece</div>
+        <p><span class="para-label">A</span>There are more than 170 official national currencies currently in circulation around the world — and while they may differ greatly in value, most show a high degree of commonality when it comes to their design. Typically, a coin or banknote will feature the effigy of a notable politician, monarch or other personality from the country of origin on one side and a recognisable state symbol (e.g. a building or an animal) on the reverse. This pattern, which has been around for more than 21 centuries, originated in ancient Greece.</p>
+        <p><span class="para-label">B</span>Prior to the invention of legal tender, most transactions in the ancient world took the form of trading a product or service for another. As sea trade grew in the Mediterranean, however, the once popular barter system became hard to maintain for two reasons: firstly, because it was tricky to calculate the value of each item or service in relation to another, and secondly, because carrying large goods (such as animals) on boats to do trade with neighbouring cities was difficult and inconvenient. Therefore, the need soon arose for a commonly recognised unit that would represent a set value — what is known today as a currency. As Aristotle explains in Politics, metal coins naturally became the most popular option due to the fact that they were easy to carry, and didn't run the risk of expiring. According to ancient Greek historian Herodotus, the first coins were invented in 620 BC in the town of Lydia, although some theorise that they actually originated in the city of Ionia. (Coins had already existed for nearly 400 years in China, unbeknownst to Europeans.)</p>
+        <p><span class="para-label">C</span>Much like with every other form of ancient Greek art, the history of ancient Greek coins can be divided into three distinct chronological periods: the Archaic (600–480 BC), the Classic (480–330 BC) and the Hellenistic Period (330–1st century BC). As ancient Greece was not a united country like today, but rather comprised of many independent city-states known as poleis, each state produced its own coins. The island of Aegina was the first to mint silver coins, perhaps adopting the new system upon witnessing how successfully it had facilitated trade for the Ionians. Aegina being the head of a confederation of seven states, it quickly influenced other city-states in the Mediterranean and the new method of trade soon became widespread. Up until approximately 510 BC, when Athens began producing its own coin, the Aegina coin — which featured a turtle on its surface — was the most predominant in the region.</p>
+        <p><span class="para-label">D</span>The tetradrachm, Athens's new coin bearing the picture of an owl on its obverse as a tribute to the city's protector, the goddess Athena, brought with it a shift in the world of coinage. Prior to the tetradrachm, Athenians had been using simple iron rods known as 'obols' for currency. As the average human hand could grasp about six obols, that number soon came to represent a 'drachma' (from the Greek verb 'dratto', which means 'to grasp') — so the new tetradrachm had the same value as 24 obols. With Athens continually growing in power, the tetradrachm soon replaced the Aegina 'turtle' as the most preponderant coin in the region. It was around that time that an agreement akin to the way the EU's euro currency functions also appeared, with different coins from all over the Mediterranean being made to the same standards as the Athenian coin (albeit with each city's own symbols on them) and being used interchangeably among the trading city-states.</p>
+        <p><span class="para-label">E</span>Coinage soon spread beyond those city-states. Romans abandoned the bronze bars they'd been using in favour of coins around the year 300 BC, and Alexander the Great and his father King Philip of Macedonia began to produce massive quantities of coins to fund their military escapades around the same time. It was with the death of the latter, in 336 BC, that the Hellenistic Period began. Two things characterise the Hellenistic Period: the introduction of a "type" (the design that coins were stamped with) on the reverse of the coins, and mass production, which mostly took place in kingdoms beyond the Greek city-states, such as Egypt, Syria and the far east. Another new feature, which was heavily criticised by the Greeks, was the introduction of profiles of kings and other important living figures as stamps in lieu of the traditional symbols of animals and buildings. Athens, still a powerful city at the time, eschewed these designs and continued to produce its own tetradrachm coins, even introducing a new-style coin characterised by broad, thin flans — a design which became popular across the Aegean and lasted until the spread of Roman rule over Greece.</p>
+        <p><span class="para-label">F</span>It's not difficult to see why ancient Greek coins continue to fascinate coin collectors and historians today. They marked the beginning of a new era in business and introduced a model of trade in Europe that is still present nowadays; they greatly influenced the design of modern coinage, with symbols such as the owl (which can be seen on the Greek version of the euro today) and portraits of important personalities; and, since they were hand-made to high technical standards representative of ancient Greek perfectionism, many are even remarkable in their own right, as tiny metal works of art.</p>
+      </div>
+      <div class="resize-handle" data-split="reading3"></div>
+      <div class="pane questions">
+        <div class="qgroup" style="margin-top:0;border-top:none;padding-top:0;">
+          <h3>Questions 29–34</h3>
+          <p class="instructions">Choose the correct heading for paragraphs A–F from the list below.</p>
+          <div class="optlist" style="margin-left:0;">
+            <div>i. The beginning of the Archaic period</div>
+            <div>ii. The Athenian obol replaces the turtle</div>
+            <div>iii. How product exchange became insufficient</div>
+            <div>iv. Roman and Macedonian coins</div>
+            <div>v. The relevance of ancient Greek coins today</div>
+            <div>vi. New cities introduce new design rules</div>
+            <div>vii. A precursor of the modern euro</div>
+            <div>viii. The difference between Ionian and Lydian coins</div>
+            <div>ix. Modern coin designs and their origin</div>
+          </div>
+          <div class="q"><span class="qnum">29</span> Paragraph A — <select data-q="R29"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+          <div class="q"><span class="qnum">30</span> Paragraph B — <select data-q="R30"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+          <div class="q"><span class="qnum">31</span> Paragraph C — <select data-q="R31"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+          <div class="q"><span class="qnum">32</span> Paragraph D — <select data-q="R32"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+          <div class="q"><span class="qnum">33</span> Paragraph E — <select data-q="R33"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+          <div class="q"><span class="qnum">34</span> Paragraph F — <select data-q="R34"><option value="">—</option><option>i</option><option>ii</option><option>iii</option><option>iv</option><option>v</option><option>vi</option><option>vii</option><option>viii</option><option>ix</option></select></div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 35–38</h3>
+          <p class="instructions">Answer the questions below with words taken from the passage. Use NO MORE THAN TWO WORDS for each answer.</p>
+          <div class="q"><span class="qnum">35</span> What were the ancient Greek city-states commonly known as? <input type="text" data-q="R35"></div>
+          <div class="q"><span class="qnum">36</span> Which type did the Aegina coin use? <input type="text" data-q="R36"></div>
+          <div class="q"><span class="qnum">37</span> What was the value of a drachma in ancient Athens? <input type="text" data-q="R37"></div>
+          <div class="q"><span class="qnum">38</span> What did the Romans use prior to the introduction of coins? <input type="text" data-q="R38"></div>
+        </div>
+        <div class="qgroup">
+          <h3>Questions 39–40</h3>
+          <p class="instructions">Choose the correct letter, A, B, C or D.</p>
+          <div class="q"><span class="qnum">39</span> The Athenian Hellenistic-period tetradrachm coin
+            <div class="optlist">
+              <label><input type="radio" name="R39" data-q="R39" value="A"> A. replaced the owl type with the profile of a king.</label>
+              <label><input type="radio" name="R39" data-q="R39" value="B"> B. was a thin, wide metal disk.</label>
+              <label><input type="radio" name="R39" data-q="R39" value="C"> C. remained popular under Roman rule.</label>
+              <label><input type="radio" name="R39" data-q="R39" value="D"> D. was massively produced in Syria and Egypt.</label>
+            </div>
+          </div>
+          <div class="q"><span class="qnum">40</span> Ancient Greek coins
+            <div class="optlist">
+              <label><input type="radio" name="R40" data-q="R40" value="A"> A. are still a method of trade in Europe nowadays.</label>
+              <label><input type="radio" name="R40" data-q="R40" value="B"> B. are remarkably different from modern coins.</label>
+              <label><input type="radio" name="R40" data-q="R40" value="C"> C. are a fine example of ancient Greek art.</label>
+              <label><input type="radio" name="R40" data-q="R40" value="D"> D. were a tribute to the goddess Athena, protector of Athens.</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('reading2')">← Reading 2</button>
+      <button class="btn" onclick="go('writing1')">Next: Writing Task 1 →</button>
+    </div>
+  </section>
+
+  <!-- ============ WRITING 1 ============ -->
+  <section class="screen hidden" id="writing1">
+    <h1>Writing Task 1</h1>
+    <div class="prompt-block">
+      <p>You should spend about 20 minutes on this task.</p>
+      <p><em>The table below gives information about a bakery's average sales in three different branches in 2015.</em></p>
+      <p>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
+      <p>You should write at least 150 words.</p>
+      <table class="datatable">
+        <tr><th>Average</th><th>London Covent Garden</th><th>London Oxford Circus</th><th>London St John's Wood</th></tr>
+        <tr><td>Number of Transactions</td><td>642</td><td>538</td><td>269</td></tr>
+        <tr><td>Transaction Value</td><td>£7.58</td><td>£4.51</td><td>£5.01</td></tr>
+        <tr><td>Number of Eat-in Transactions</td><td>304</td><td>247</td><td>150</td></tr>
+        <tr><td>Number of Take-Away Transactions</td><td>338</td><td>291</td><td>119</td></tr>
+        <tr><td>Most popular Item</td><td>Croissant</td><td>medium latte</td><td>strawberry tart</td></tr>
+      </table>
+    </div>
+    <div class="writing-box">
+      <textarea id="writingArea1" data-q="W1" placeholder="Write your Task 1 response here..."></textarea>
+      <div class="wordcount" id="wc1">0 words</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('reading3')">← Reading 3</button>
+      <button class="btn" onclick="go('writing2')">Next: Writing Task 2 →</button>
+    </div>
+  </section>
+
+  <!-- ============ WRITING 2 ============ -->
+  <section class="screen hidden" id="writing2">
+    <h1>Writing Task 2</h1>
+    <div class="prompt-block">
+      <p>You should spend about 40 minutes on this task.</p>
+      <p><em>Some people think that developed countries have a higher responsibility to combat climate change than developing countries. Others believe that all countries should have the same responsibilities towards protecting the environment.</em></p>
+      <p>Discuss both these views and give your own opinion.</p>
+      <p>You should write at least 250 words. Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p>
+    </div>
+    <div class="writing-box">
+      <textarea id="writingArea2" data-q="W2" placeholder="Write your Task 2 response here..."></textarea>
+      <div class="wordcount" id="wc2">0 words</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('writing1')">← Writing 1</button>
+      <button class="btn" onclick="go('submitScreen')">Next: Review &amp; Submit →</button>
+    </div>
+  </section>
+
+  <!-- ============ SUBMIT ============ -->
+  <section class="screen hidden" id="submitScreen">
+    <h1>Review &amp; Submit</h1>
+    <p id="submitSummary">Loading progress summary…</p>
+    <div class="note">Submitting will send your Listening, Reading and Writing answers to your test administrator's results sheet and lock the test. Make sure you've visited every section first.</div>
+    <div class="btnrow">
+      <button class="btn secondary" onclick="go('writing2')">← Back to Writing 2</button>
+      <button class="btn danger" id="submitBtn">Submit Test</button>
+    </div>
+  </section>
+
+  <!-- ============ DONE ============ -->
+  <section class="screen hidden" id="doneScreen">
+    <h1>Test submitted</h1>
+    <div class="callout" id="doneMessage">Your answers have been recorded. You may close this window.</div>
+  </section>
+
+  </main>
+</div>
+
+<footer class="appfoot">IELTS Academic Practice Test 3 — practice tool, not an official IELTS product.</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
